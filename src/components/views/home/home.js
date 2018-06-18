@@ -10,6 +10,8 @@ import Container from '../../layout/styled-components/container'
 import Title from '../../layout/styled-components/title'
 import Team from '../../layout/styled-components/team'
 import Events from '../../layout/styled-components/events'
+import Time from '../../layout/styled-components/time'
+import Loading from '../../layout/styled-components/loading'
 
 class Home extends Component {
     constructor(props) {
@@ -24,34 +26,28 @@ class Home extends Component {
         const { games } = this.props
         return (
             <Container>
-                {
-                    games.isPending &&
-                        <div>Loading</div>
-                }
+                <Title>World Cup Russia 2018 - Matches</Title>
+                <Loading show={games.isPending}/>
                 {console.log(games.list)}
                 {
                     !games.isPending && 
                         games.list.map((item, key) => 
                             <Match key={key}>
                                 <Title>{item.venue}</Title>
-                                <span>Day: {dateFormat(item.datetime, 'dd/mm/yy')}</span>
+                                {
+                                    item.time &&
+                                        <Time>{item.time}</Time>
+                                }
+                                <span>Day: {dateFormat(item.datetime, 'dd/mm/yyyy - h:MM:ss TT')}</span>
+                                <div>
                                 <Team>{item.home_team.country}</Team>
+                                
                                 <div>{item.home_team.goals}
-                                    <span>X</span> 
+                                    <small>X</small> 
                                     {item.away_team.goals}
                                 </div>
                                 <Team>{item.away_team.country}</Team>
-                                <Events>
-                                    {
-                                        _isArray(item.away_team_events) ? 
-                                            item.away_team_events.map((event, key) => 
-                                            <div>
-                                                <h2>{event.type_of_event}</h2>
-                                                <div>{event.player}</div>
-                                            </div>
-                                        ) : <div>No Events</div>
-                                    }
-                                </Events>
+                                </div>
                             </Match>
                     )
                 }
